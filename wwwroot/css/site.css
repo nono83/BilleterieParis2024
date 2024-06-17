@@ -62,6 +62,14 @@ section p {
     text-align: justify;
 }
 
+.carousel-indicators button {
+    background-color: red !important;
+}
+
+.carousel-indicators button.active {
+    background-color: blue !important;
+}
+
 @media (min-width: 768px) {
     .hero-image h1 {
         font-size: 4rem;
