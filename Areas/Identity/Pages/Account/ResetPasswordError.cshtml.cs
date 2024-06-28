@@ -15,11 +15,11 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace BilleterieParis2024.Areas.Identity.Pages.Account
 {
-    public class ResetPasswordModel : PageModel
+    public class ResetPasswordErrorModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager)
+        public ResetPasswordErrorModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
