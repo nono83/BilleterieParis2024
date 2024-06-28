@@ -1,6 +1,13 @@
 using BilleterieParis2024.Data;
+using BilleterieParis2024.Models;
+using BilleterieParis2024.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Globalization;
 
 namespace BilleterieParis2024
 {
@@ -16,11 +23,35 @@ namespace BilleterieParis2024
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            
             builder.Services.AddControllersWithViews();
 
+            //Globalization et localization pour le multilanguages
+            //builder.Services.AddControllersWithViews()
+            //    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            //builder.Services.Configure<RequestLocalizationOptions>(options =>
+            //{
+            //    var supportedCultures = new[]
+            //    {
+            //        //new CultureInfo("en-US"),
+            //        //new CultureInfo("es"),
+            //        new CultureInfo("fr")
+            //    };
+            //    options.DefaultRequestCulture = new RequestCulture(culture: "fr-FR", uiCulture: "fr");
+            //    options.SupportedCultures = supportedCultures;
+            //    options.SupportedUICultures = supportedCultures;
+            //});
+
+
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
 
             var app = builder.Build();
 
@@ -48,6 +79,10 @@ namespace BilleterieParis2024
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            //Globalization et localization pour le multilanguages
+            //var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+            //app.UseRequestLocalization(locOptions.Value);
 
             app.Run();
         }
