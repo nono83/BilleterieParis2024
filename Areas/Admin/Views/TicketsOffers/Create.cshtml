@@ -1,0 +1,44 @@
+﻿@model BilleterieParis2024.Models.TicketsOffers
+
+@{
+    ViewData["Title"] = "Création d'une nouvelle offre";
+}
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-6">
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row mb-2 mt-5">
+                <div class="col-4">
+                    <label asp-for="OfferName" class="control-label "></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="OfferName" class="form-control" />
+                </div>
+                <span asp-validation-for="OfferName" class="text-danger"></span>
+            </div>
+            <div class="form-group row mb-2">
+                <div class="col-4">
+                    <label asp-for="Price" class="control-label "></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Price" class="form-control" />
+                </div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group row justify-content-center align-content-center mt-4">
+                <input type="submit" value="Sauvegarder" class="btn btn-primary col-3 mx-2" />
+
+                <a class="btn btn-success col-3" asp-action="Index">Retour à la liste</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -12,5 +12,6 @@ namespace BilleterieParis2024.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<TicketsOffers> TicketsOffers { get; set; }
     }
 }

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<BilleterieParis2024.Models.TicketsOffers>
+
+@{
+    ViewData["Title"] = "Liste des offres";
+}
+@section styles{
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.2/build/css/alertify.min.css" />
+}
+<div class="row">
+    <div class="row ">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+    </div>
+   
+</div>
+<br />
+
+<div class="row align-items-center justify-content-center">
+    <div class="row col-3 mb-3">
+        <a asp-action="Create" class="btn btn-primary"><i class="fas fa-plus mx-2"></i>Créer une nouvelle offre</a>
+    </div>
+    <div class="row col-10">
+        <table id="table-offers" class="table table-striped border ">
+            <thead >
+                <tr class="bg-success text-light">
+                    <th>
+                        @Html.DisplayNameFor(model => model.OfferName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OfferName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                            @await Html.PartialAsync("_ButtonPartial",@item.Id)
+                         @* <partial name="_ButtonPartial" model="@item.Id" />  *@
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.2/build/alertify.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table-offers').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength', 'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+        $(function () {
+            var save = '@TempData["save"]'
+            if (save != '') {
+                alertify.success(save);
+            }
+            var edit = '@TempData["edit"]'
+            if (edit != '') {
+                alertify.success(edit);
+            }
+            var del = '@TempData["delete"]'
+            if (del != '') {
+                alertify.error(del);
+            }
+        })
+    </script>
+}

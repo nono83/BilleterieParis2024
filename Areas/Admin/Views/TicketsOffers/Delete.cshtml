@@ -1,0 +1,33 @@
+﻿@model BilleterieParis2024.Models.TicketsOffers
+
+@{
+    ViewData["Title"] = "Suppression de l'offre";
+}
+
+<h2>@ViewData["Title"] </h2>
+<hr />
+<div class="row justify-content-center align-content-center">
+    <dl class="row col-6">
+        <h3>Etes vous sûr de vouloir supprimer cette offre ?</h3>
+        <dt class = "col-4">
+            @Html.DisplayNameFor(model => model.OfferName)
+        </dt>
+        <dd class = "col-8">
+            @Html.DisplayFor(model => model.OfferName)
+        </dd>
+        <dt class = "col-4">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-8">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+
+    <div class="row justify-content-center align-content-center mt-4">
+        <form class="col-6" asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger col-3" />
+            <a asp-action="Index" class="btn btn-success col-3">Back to List</a>
+        </form>
+    </div>
+</div>
