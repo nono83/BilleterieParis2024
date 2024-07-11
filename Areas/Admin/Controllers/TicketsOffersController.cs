@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BilleterieParis2024.Data;
 using BilleterieParis2024.Models;
 using Microsoft.AspNetCore.Authorization;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace BilleterieParis2024.Areas.Admin.Controllers
 {
@@ -15,10 +16,12 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
     public class TicketsOffersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private IHostingEnvironment _he;
 
-        public TicketsOffersController(ApplicationDbContext context)
+        public TicketsOffersController(ApplicationDbContext context, IHostingEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Admin/TicketsOffers
@@ -59,15 +62,38 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create([Bind("Id,OfferName,Price")] TicketsOffers ticketsOffers)
-        public async Task<IActionResult> Create(TicketsOffers ticketsOffers)
+        public async Task<IActionResult> Create(TicketsOffers ticketsOffers, IFormFile? image)
         {
+            
             if (ModelState.IsValid)
             {
+                var searchOffer = _context.TicketsOffers.FirstOrDefault(c => c.OfferName == ticketsOffers.OfferName);
+                if (searchOffer != null)
+                {
+                    ViewBag.message = "Cette offre existe déjà";
+                    return View(ticketsOffers);
+                }
+
+                if (image != null)
+                {
+                    var name = Path.Combine(_he.WebRootPath + "/Images", Path.GetFileName(image.FileName));
+                    await image.CopyToAsync(new FileStream(name, FileMode.Create));
+                    ticketsOffers.Image = "Images/" + image.FileName;
+                }
+
+                if (image == null)
+                {
+                    ticketsOffers.Image = "Images/noimage.PNG";
+                }
+
                 _context.Add(ticketsOffers);
                 await _context.SaveChangesAsync();
                 TempData["save"] = "L’offre a bien été créée";
                 return RedirectToAction(nameof(Index));
             }
+
+           
+
             return View(ticketsOffers);
         }
 
@@ -93,13 +119,24 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("Id,OfferName,Price")] TicketsOffers ticketsOffers)
-        public async Task<IActionResult> Edit(TicketsOffers ticketsOffers)
+        public async Task<IActionResult> Edit(TicketsOffers ticketsOffers,IFormFile? ImageFile, string Image)
         {
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (ImageFile != null)
+                    {
+                        var name = Path.Combine(_he.WebRootPath + "/Images", Path.GetFileName(ImageFile.FileName));
+                        await ImageFile.CopyToAsync(new FileStream(name, FileMode.Create));
+                        ticketsOffers.Image = "Images/" + ImageFile.FileName;
+                    }
+                    else
+                    {
+                        ticketsOffers.Image = Image;
+                    }
+
                     _context.Update(ticketsOffers);
                     await _context.SaveChangesAsync();
                     TempData["edit"] = "L'offre a bien été mise à jour";
@@ -117,6 +154,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ModelState.Clear();
             return View(ticketsOffers);
         }
 
