@@ -14,11 +14,14 @@ namespace BilleterieParis2024.Models
         [Display(Name = "Nom de l'offre")]
         public string OfferName { get; set; }
 
+        [BindProperty]
+        public string? Description { get; set; }
+
         [Required(ErrorMessage ="Le prix est obligatoire")]
         [RegularExpression("^\\d+$", ErrorMessage = "Le prix doit être un nombre entier positif")]
         [Display(Name = "Prix")]
-
         public int Price { get; set; }
+
 
         public string? Image { get; set; }
 

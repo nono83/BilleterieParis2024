@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create([Bind("Id,OfferName,Price")] TicketsOffers ticketsOffers)
-        public async Task<IActionResult> Create(TicketsOffers ticketsOffers, IFormFile? image)
+        public async Task<IActionResult> Create(TicketsOffers ticketsOffers, IFormFile? image, string Description)
         {
             
             if (ModelState.IsValid)
@@ -77,7 +78,10 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                 if (image != null)
                 {
                     var name = Path.Combine(_he.WebRootPath + "/Images", Path.GetFileName(image.FileName));
-                    await image.CopyToAsync(new FileStream(name, FileMode.Create));
+                    if (!System.IO.File.Exists(name))
+                    {
+                        await image.CopyToAsync(new FileStream(name, FileMode.Create));
+                    }
                     ticketsOffers.Image = "Images/" + image.FileName;
                 }
 
@@ -86,7 +90,8 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                     ticketsOffers.Image = "Images/noimage.PNG";
                 }
 
-                _context.Add(ticketsOffers);
+                ticketsOffers.Description=Description;
+               _context.Add(ticketsOffers);
                 await _context.SaveChangesAsync();
                 TempData["save"] = "L’offre a bien été créée";
                 return RedirectToAction(nameof(Index));
@@ -119,7 +124,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("Id,OfferName,Price")] TicketsOffers ticketsOffers)
-        public async Task<IActionResult> Edit(TicketsOffers ticketsOffers,IFormFile? ImageFile, string Image)
+        public async Task<IActionResult> Edit(TicketsOffers ticketsOffers,IFormFile? ImageFile, string ImageNotChanged, string Description)
         {
 
             if (ModelState.IsValid)
@@ -129,14 +134,17 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                     if (ImageFile != null)
                     {
                         var name = Path.Combine(_he.WebRootPath + "/Images", Path.GetFileName(ImageFile.FileName));
-                        await ImageFile.CopyToAsync(new FileStream(name, FileMode.Create));
+                        if (!System.IO.File.Exists(name))
+                        {
+                            await ImageFile.CopyToAsync(new FileStream(name, FileMode.Create));
+                        }
                         ticketsOffers.Image = "Images/" + ImageFile.FileName;
                     }
                     else
                     {
-                        ticketsOffers.Image = Image;
+                        ticketsOffers.Image = ImageNotChanged;
                     }
-
+                    ticketsOffers.Description = Description;
                     _context.Update(ticketsOffers);
                     await _context.SaveChangesAsync();
                     TempData["edit"] = "L'offre a bien été mise à jour";
