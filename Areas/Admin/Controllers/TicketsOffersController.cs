@@ -14,6 +14,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace BilleterieParis2024.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class TicketsOffersController : Controller
     {
         private readonly ApplicationDbContext _context;

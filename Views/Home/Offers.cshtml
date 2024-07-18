@@ -1,0 +1,97 @@
+﻿@model IEnumerable<BilleterieParis2024.Models.TicketsOffers>
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Billeterie";
+}
+<h2>@ViewData["Title"]</h2>
+<hr />
+<div class="row p-2 my-4 bg-light">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque venenatis nulla ut lacus accumsan suscipit. Integer venenatis molestie nibh in dapibus. Pellentesque tempus sapien sed nulla accumsan consequat. Suspendisse potenti. Fusce vulputate blandit justo, sit amet hendrerit mi ornare nec. Morbi id auctor lacus, eleifend tincidunt augue. Curabitur pulvinar laoreet magna. In pretium felis id augue pharetra, vitae efficitur odio sagittis.</p>
+
+    <p>Integer urna quam, malesuada id consequat quis, vulputate non lorem. Aenean pharetra augue massa, eget tempus lectus mollis et. Vivamus ac eros fringilla, ornare lectus vitae, rutrum tellus. Curabitur at sagittis tellus, ac sodales eros. Vivamus blandit lobortis turpis, id vulputate elit sollicitudin nec. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec pulvinar urna. Maecenas at sapien lorem. Cras fermentum consequat elit, id lacinia nibh. Proin porta posuere tellus, mollis egestas diam dictum eget.</p>
+</div>
+@* <div class="row mx-5"> *@
+<div class="row justify-content-center align-content-center">
+    @foreach (var ticketsOffers in Model)
+    {
+@*         <div class="col-md-4">
+            <div class="card mb-4 shadow ">
+                <div class="card-header text-center">
+                    <h4 class="my-0 font-weight-normal">
+                        <label style="font-size: 23px;color: steelblue">@ticketsOffers.OfferName</label>
+                    </h4>
+                </div>
+                <div class="text-center">
+                    <img src="~/@ticketsOffers.Image" alt="Tickets Paris 2024 @ticketsOffers.OfferName" class="my-4 card-img text-center" style="width:200px; height: 150px;" />
+                </div>
+                <div class="card-text mx-3">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <label style="font-size: 20px;color: #a51313"><b>Tarif : @ticketsOffers.Price €</b></label>
+                        </div>
+                        <a asp-action="Detail" asp-controller="Home" asp-route-id="@ticketsOffers.Id" class="btn btn-primary pull-right">Réserver</a>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+
+            <div class="row col-md-8 border rounded-2 shadow-sm my-3 py-3">
+            <div class="col-sm-4 text-center justify-content-center align-content-center">
+                    <img src="~/@ticketsOffers.Image" alt="Card Image" class="card-img" style="width:130px; height: 100px;" />
+                </div>
+                <div class="col-sm-8">
+                    <div class="card-title text-center ">
+                        <h4 class="my-0 font-weight-normal">
+                            <label style="font-size: 23px;color: steelblue">@ticketsOffers.OfferName</label>
+                        </h4>
+                    </div>
+
+                <div class="my-2">@ticketsOffers.Description</div>
+                    <div class="">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <label style="font-size: 20px;color: #a51313"><b>Tarif : @ticketsOffers.Price €</b></label>
+                            </div>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="AddToCart" asp-controller="Home" asp-route-id="@ticketsOffers.Id" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary pull-right">Réserver</a> 
+                        }else{
+                            <button data-toggle="modal" data-target="#Modal" class="btn btn-primary pull-right">Réserver</button>
+                        }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    }
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Se connecter</h5>
+
+            </div>
+            <div class="modal-body">
+                Pour ajouter des billets au panier une connexion au compte de la billeterie est nécessaire.
+            </div>
+            <div class="modal-footer">
+                <a  class="btn btn-success" asp-area="Identity" asp-page="/Account/Login">Je me connecte</a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+}

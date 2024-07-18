@@ -1,4 +1,5 @@
-﻿using BilleterieParis2024.Models;
+﻿using BilleterieParis2024.Data;
+using BilleterieParis2024.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,11 +7,14 @@ namespace BilleterieParis2024.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -18,9 +22,11 @@ namespace BilleterieParis2024.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Offers()
         {
-            return View();
+            return _context.TicketsOffers != null ?
+                          View(_context.TicketsOffers.ToList()) :
+                          Problem("Entity set 'ApplicationDbContext.TicketsOffers'  is null.");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
