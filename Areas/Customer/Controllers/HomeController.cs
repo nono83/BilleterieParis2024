@@ -1,27 +1,29 @@
-﻿using BilleterieParis2024.Data;
-using BilleterieParis2024.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using BilleterieParis2024.Data;
+using BilleterieParis2024.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace BilleterieParis2024.Controllers
+namespace BilleterieParis2024.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
+            
         private readonly ApplicationDbContext _context;
 
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
             _context = context;
         }
 
+        [Route("")]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Route("offers")]
         public IActionResult Offers()
         {
             return _context.TicketsOffers != null ?
@@ -36,3 +38,4 @@ namespace BilleterieParis2024.Controllers
         }
     }
 }
+

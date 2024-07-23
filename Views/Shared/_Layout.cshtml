@@ -3,6 +3,23 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@using System.Net.Http
+@using BilleterieParis2024.Utilities
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("roleName");
+    int count = 0;
+    List<TicketsOffers> ticketsOffers = HttpContextAccessor.HttpContext.Session.Get<List<TicketsOffers>>("TicketsOffers");
+    if (ticketsOffers == null)
+    {
+        ticketsOffers = new List<TicketsOffers>();
+    }
+    count = ticketsOffers.Count();
+
+}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,8 +63,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Offers">Billeterie</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Offers">Billeterie</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Cart" asp-action="Cart">
+                                <i class="fas fa-shopping-cart"></i>
+                                (@count)
+                            </a>
+                        </li>
+
                         @{
                             //var user = await UserManager.FindByIdAsync("599d678f-7a49-4943-8b4e-b36d177e1700");
                             //var userRoles = await UserManager.GetRolesAsync(user);
