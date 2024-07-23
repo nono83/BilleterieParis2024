@@ -16,7 +16,7 @@
 </div>
 @* <div class="row mx-5"> *@
 <div class="row justify-content-center align-content-center">
-    <form asp-action="AddToCart"  method="post" enctype="multipart/form-data">
+    
     @foreach (var ticketsOffers in Model)
     {
 @*         <div class="col-md-4">
@@ -58,11 +58,14 @@
                             <div class="btn-group">
                                 <label style="font-size: 20px;color: #a51313"><b>Tarif : @ticketsOffers.Price €</b></label>
                             </div>
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                                <button type="submit" asp-route-id="@ticketsOffers.Id" class="btn btn-primary pull-right">Réserver</button>
+                            <form asp-action="AddToCart"  method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
+                                <button type="submit"  class="btn btn-primary pull-right">Réserver</button>
+                            </form>
                         }else{
-                            <button  data-toggle="modal" data-target="#Modal" class="btn btn-primary pull-right">Réserver</button>
+                            <button type="button"  data-toggle="modal" data-target="#Modal" class="btn btn-primary pull-right">Réserver</button>
                         }
                         </div>
                     </div>
@@ -70,7 +73,7 @@
             </div>
 
     }
-    </form>
+
 </div>
 
 

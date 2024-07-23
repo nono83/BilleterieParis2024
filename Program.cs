@@ -79,6 +79,17 @@ namespace BilleterieParis2024
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
+            //Gestion des sessions
+            builder.Services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                //options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
+
 
             var app = builder.Build();
 
@@ -102,19 +113,19 @@ namespace BilleterieParis2024
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
-
-            app.MapControllerRoute(
-               name: "default",
-               pattern: "{controller=Home}/{action=Index}/{id?}");
+            //app.MapControllerRoute(
+            //    name: "areas",
+            //    pattern: "{area=exists}/{controller}/{action}/{id?}");
 
             //app.MapControllerRoute(
-            //   name: "offers",
-            //   pattern: "{controller=Home}/{action=Offers}/{id?}");
+            //name: "default",
+            //pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            app.MapControllerRoute(
+            name: "areas",
+            pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
+            app.UseSession();
 
             app.MapRazorPages();
 
