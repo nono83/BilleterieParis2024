@@ -1,0 +1,73 @@
+﻿@using BilleterieParis2024.Models
+@model List<TicketsOffers>
+@{
+    ViewData["Title"] = "Votre panier";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<br />
+<div class="row">
+    <table id="table-cart" class="table  border ">
+        <thead>
+            <tr>
+                <th class="text-center" colspan="2">Offre</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="align-middle">
+                    <td>
+                        <img src="~/@item.Image" width="60px" height="50px" />
+                    </td>
+                    <td >@item.OfferName</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price €</td>
+                    <td>
+                        <a asp-area="Customer" asp-action="RemoveFromCart" asp-controller="Cart" asp-route-cart="true" asp-route-id="@item.Id" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-6">
+        <a asp-action="Offers" asp-controller="Home" class="btn btn-success">Retour à la liste</a>
+    </div>
+    <div class="col-6 text-right">
+        <h3>Montant total : @Model.Sum(c=>c.Price) € </h3>
+        <a asp-area="Customer" asp-action="Checkout" asp-controller="Order" class="btn btn-info">Commander</a>
+    </div>
+</div>
+
+@* @section scripts{
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.2/build/alertify.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table-cart').DataTable();
+        });
+
+        $(function () {
+            var save = '@TempData["save"]'
+            if (save != '') {
+                alertify.success(save);
+            }
+            var edit = '@TempData["edit"]'
+            if (edit != '') {
+                alertify.success(edit);
+            }
+            var del = '@TempData["delete"]'
+            if (del != '') {
+                alertify.error(del);
+            }
+        })
+    </script>
+} *@

@@ -32,7 +32,6 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
             return View(ticketsOffers);
         }
 
-        //POST product detail acation method
         [HttpPost]
         public ActionResult AddToCart(int? id)
         {
