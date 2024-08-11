@@ -1,11 +1,16 @@
 ﻿@model IEnumerable<BilleterieParis2024.Models.TicketsOffers>
-@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity;
+@using BilleterieParis2024.Utilities;
+@using Microsoft.AspNetCore.Http;
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Billeterie";
+
+    List<TicketsOffers> ticketsOffersCartList = HttpContextAccessor.HttpContext.Session.Get<List<TicketsOffers>>("TicketsOffers"); 
 }
 <h2>@ViewData["Title"]</h2>
 <hr />
@@ -43,7 +48,7 @@
 
             <div class="row col-md-8 border rounded-2 shadow-sm my-3 py-3">
             <div class="col-sm-4 text-center justify-content-center align-content-center">
-                    <img src="~/@ticketsOffers.Image" alt="Card Image" class="card-img" style="width:130px; height: 100px;" />
+                <img src="~/@ticketsOffers.Image" alt="Tickets @ticketsOffers.OfferName Paris 2024" class="card-img" style="width:130px; height: 100px;" />
                 </div>
                 <div class="col-sm-8">
                     <div class="card-title text-center ">
@@ -60,10 +65,28 @@
                             </div>
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <form asp-action="AddToCart"  method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
-                                <button type="submit"  class="btn btn-primary pull-right">Réserver</button>
-                            </form>
+                            bool ticketsOfferInCart = false;
+                            if (ticketsOffersCartList != null)
+                            {
+                                var ticketsOffer = ticketsOffersCartList.FirstOrDefault(c => c.Id == ticketsOffers.Id);
+                                ticketsOfferInCart = ticketsOffer != null;
+                            }
+                            if (ticketsOfferInCart)
+                            {
+                                <form asp-controller="Cart" asp-action="Remove" method="post" >
+                                    <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
+                                    <button type="submit" class="btn btn-danger pull-right" >Annuler</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
+                                    <button type="submit" class="btn btn-primary pull-right">Réserver</button>
+                                </form>
+                            }
+                            
+                          
                         }else{
                             <button type="button"  data-toggle="modal" data-target="#Modal" class="btn btn-primary pull-right">Réserver</button>
                         }
