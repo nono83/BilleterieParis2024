@@ -17,6 +17,8 @@ namespace BilleterieParis2024.Models
         public Orders Order { get; set; }
 
         [ForeignKey("TicketsOfferID")]
-        public TicketsOffers TicketsOffer { get; set; }
+        public virtual TicketsOffers TicketsOffer { get; set; }
+       
+    
     }
 }

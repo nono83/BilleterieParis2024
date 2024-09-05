@@ -1,0 +1,92 @@
+﻿@model BilleterieParis2024.Models.PaymentCard;
+@using  BilleterieParis2024.Models;
+@using BilleterieParis2024.Utilities;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewData["Title"] = "Détail de votre commande";
+    List<TicketsOffers> ticketsOffers = HttpContextAccessor.HttpContext.Session.Get<List<TicketsOffers>>("TicketsOffers");
+    
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-controller="Order" asp-action="Checkout" method="post" enctype="multipart/form-data">
+    <div class="p-4 rounded border row">
+        <div asp-validation-summary="ModelOnly" class="text-danger">
+        </div>
+        <div class="col-6">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="CardNo"></label>
+                </div>
+                <div class="col-8">
+                    <input placeholder="1234 1234 1234 1234" asp-for="CardNo" class="form-control" />
+                    <span asp-validation-for="CardNo" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="form-group row mt-3">
+                <div class="col-4">
+                    <label asp-for="ExpirationDate"></label>
+                </div>
+                <div class="col-8">
+                    <input type="text" placeholder="MM / AA" asp-for="ExpirationDate" class="form-control" />
+                    <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="form-group row mt-3">
+                <div class="col-4">
+                    <label asp-for="Crypto"></label>
+                </div>
+                <div class="col-8">
+                    <input placeholder="CVC" asp-for="Crypto" class="form-control" />
+                    <span asp-validation-for="Crypto" class="text-danger"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="text-center">Offre</th>
+                        <th class="text-center">Prix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ticketsOffers)
+                    {
+                        <tr>
+                            <td class="text-center ">
+                                <img src="~/@item.Image" width="60px" height="50px" />
+                            </td>
+                            <td class="text-center align-middle">@item.OfferName</td>
+                            <td class="text-end align-middle">@item.Price.ToString("##0.00") €</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="text-end">
+                <h3>Prix total : @ticketsOffers.Sum(c=>c.Price).ToString("##0.00") €</h3>
+            </div>
+            <div class="form-group text-end">
+                <input type="submit" value="Commander" class="btn btn-success" />
+            </div>
+        </div>
+
+
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+

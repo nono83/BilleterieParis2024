@@ -30,7 +30,7 @@
                         </td>
                         <td >@item.OfferName</td>
                         <td>@item.Description</td>
-                        <td>@item.Price €</td>
+                        <td>@item.Price.ToString("##0.00") €</td>
                         <td>
                             <a asp-area="Customer" asp-action="RemoveFromCart" asp-controller="Cart" asp-route-cart="true" asp-route-id="@item.Id" class="btn btn-danger">
                                 <i class="fas fa-trash-alt"></i>
@@ -42,17 +42,14 @@
         </table>
     </div>
     <div class="row mt-3">
-        <h4 class="text-end">Montant total : @Model.Sum(c=>c.Price) € </h4>
+        <h4 class="text-end">Montant total : @Model.Sum(c=>c.Price).ToString("##0.00")  €</h4>
     </div>
     <div class="row mt-3">
         <div class="col-6">
             <a asp-action="Offers" asp-controller="Home" class="btn btn-primary">Retour à la billeterie</a>
         </div>
         <div class="col-6 text-end">
-
-            <form asp-controller="Order" asp-action="Checkout" method="post" enctype="multipart/form-data">
-                <input type="submit" value="Commander" class="btn btn-success" />
-            </form>
+            <a asp-area="Customer" asp-action="Checkout" asp-controller="Order" class="btn btn-success">Valider la commande</a>
         </div>
     </div>
 }
@@ -69,3 +66,8 @@ else
     </div>
 }
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
