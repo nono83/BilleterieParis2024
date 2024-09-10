@@ -1,9 +1,20 @@
 ﻿using BilleterieParis2024.Data;
 using BilleterieParis2024.Models;
 using BilleterieParis2024.Utilities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using QRCoder;
 using System.Security.Claims;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using static QRCoder.PayloadGenerator;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
+using System.Drawing.Printing;
+
 
 namespace BilleterieParis2024.Areas.Customer.Controllers
 {
@@ -11,10 +22,12 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
     public class OrderController : Controller
     {
         private ApplicationDbContext _db;
+        private Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
 
-        public OrderController(ApplicationDbContext db)
+        public OrderController(ApplicationDbContext db, Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
         //GET Checkout action method
@@ -32,28 +45,32 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
         public async Task<IActionResult> Checkout(Orders anOrder)
         {
 
-                List<TicketsOffers> ticketsOffers = HttpContext.Session.Get<List<TicketsOffers>>("TicketsOffers");
-                if (ticketsOffers != null)
-                {
-                    foreach (var ticketsOffer in ticketsOffers)
-                    {
-                        OrderDetails orderDetails = new OrderDetails();
-                        orderDetails.TicketsOfferID = ticketsOffer.Id;
-                        anOrder.OrderDetails.Add(orderDetails);
-                    }
-                    //Récupération de l'id de l'utilisateur connecté
-                    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var OrderNo = GetOrderNo();
-                    anOrder.OrderNo = OrderNo;
-                    anOrder.OrderKey = GetOrderKey(16);
-                    anOrder.UserId = userId;
-                    anOrder.OrderDate = DateTime.Now;
+            var user = await _userManager.GetUserAsync(User);
+            var Message = $"Merci {user.FirstName} {user.LastName} !";
 
-                    _db.Orders.Add(anOrder);
-                    await _db.SaveChangesAsync();
-                    
-                }
-          
+
+            List<TicketsOffers> ticketsOffers = HttpContext.Session.Get<List<TicketsOffers>>("TicketsOffers");
+
+            foreach (var ticketsOffer in ticketsOffers)
+            {
+                OrderDetails orderDetails = new OrderDetails();
+                orderDetails.TicketsOfferID = ticketsOffer.Id;
+                anOrder.OrderDetails.Add(orderDetails);
+            }
+            //Récupération de l'id de l'utilisateur connecté
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var OrderNo = GetOrderNo();
+            anOrder.OrderNo = OrderNo;
+            anOrder.OrderKey = GetOrderKey(16);
+            anOrder.UserId = userId;
+            anOrder.OrderDate = DateTime.Now;
+
+            _db.Orders.Add(anOrder);
+            await _db.SaveChangesAsync();
+
+            string QRCodeText = $"{user.CustomerKey} - {anOrder.OrderKey}";
+            string userName= $"{user.FirstName} {user.LastName}";
+            QRCodeModel qrCodeModel = CreateQRCode(QRCodeText,  anOrder.OrderNo, userName);
 
             //var orderResult = from order in _db.Orders
             //                  join orderDetail in _db.OrderDetails on order.Id equals orderDetail.OrderId
@@ -66,7 +83,7 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
             //                  };
                          //select $"Commande n° {order.OrderNo}";
            // return RedirectToAction("CheckoutConfirm", anOrder);
-            return View("CheckoutConfirm", anOrder);
+            return View("CheckoutConfirm", qrCodeModel);
 
             // On réinitialise la liste des produits à 0
             HttpContext.Session.Set("TicketsOffers", new List<TicketsOffers>());
@@ -86,7 +103,7 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
         }
 
         //Génération de la clé associée à la commande
-        public static string GetOrderKey(int length)
+        public  string GetOrderKey(int length)
         {
             const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -100,6 +117,36 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
             }
 
             return sb.ToString();
+        }
+
+        private QRCodeModel CreateQRCode(string QRCodeText, string OrderNo, string userName)
+        {
+            QRCodeModel model=new QRCodeModel();
+            Payload payload = null;
+            //payload = new Mail("arnaud.gianati@club-internet.fr", "Votre billet pour les jo", "Voici votre QRCode");
+            payload = new SMS("0627818477", "Voici votre QRCode");
+            QRCodeGenerator QrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = QrGenerator.CreateQrCode(QRCodeText, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            //GetGraphic retourne un bitmap qui peut être sauvegardé si on le souhaite
+            var qrCodeAsBitmap = qrCode.GetGraphic(20);
+
+            string base64String = Convert.ToBase64String(BitmapToByteArray(qrCodeAsBitmap));
+            model.QRImageURL= "data:image/png;base64," + base64String;
+            model.UserName = userName;
+            model.OrderNo = OrderNo;
+
+            return model;
+        }
+
+        //Convertion du bitmap en un tableau de byte après avoir été convertit en memory stream
+        private byte[] BitmapToByteArray(Bitmap bitmap)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmap.Save(ms, ImageFormat.Png);
+                return ms.ToArray();
+            }
         }
     }
 }
