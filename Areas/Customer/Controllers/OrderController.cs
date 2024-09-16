@@ -10,10 +10,9 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using static QRCoder.PayloadGenerator;
-using PdfSharpCore;
-using PdfSharpCore.Pdf;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
 using System.Drawing.Printing;
+
+using BilleterieParis2024.Services;
 
 
 namespace BilleterieParis2024.Areas.Customer.Controllers
@@ -144,9 +143,33 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                bitmap.Save(ms, ImageFormat.Png);
+                bitmap.Save(ms,System.Drawing.Imaging.ImageFormat.Png );
+                //bitmap.Save(ms, ImageFormat.Png);
                 return ms.ToArray();
             }
+        }
+
+        public async Task<IActionResult> GeneratePDF(QRCodeModel qRCodeModel)
+        {
+            string logoUrl = $"https://{HttpContext.Request.Host.Value}/images/logo_jo_paris_2024.png";
+            string htmlContent = "<div style='text-align: center; margin-bottom: 30px;'>";
+            htmlContent += $"<img src ='{logoUrl}' height = '150px' width = '150px' />";
+            htmlContent += "</div >";
+            htmlContent += "<div style = 'text-align: center;' >";
+            htmlContent += $" <div style = 'argin-bottom: 30px;' > Merci {qRCodeModel.UserName} pour votre commande </div >";
+            htmlContent += $"<h3 style = 'margin-bottom: 30px;' > Commande n°{qRCodeModel.OrderNo} </h3 >";
+            htmlContent += "<div style = 'margin-bottom: 30px;' ><p> Billets pour les jeux olympiques de Paris 2024.</p><p> Présentez le QrCode ci-dessous à l'entrée le jour des épreuves. </p></div >";
+            htmlContent += $"<img src = '{qRCodeModel.QRImageURL}' height = '200px' width = '200px' />";
+            htmlContent += "</div>";
+
+             byte[] pdf = PDFService.CreateWithSelectPdf(htmlContent);
+            // byte[] pdf = PDFService.CreatePdfWithPdfSharp(htmlContent);
+            // byte[] pdf = PDFService.CreatePdfWithIronPdf(htmlContent);
+            //byte[] pdf = PDFService.CreateWithDinkToPdf(htmlContent);
+
+            string fileName = $"billetjo2024-{qRCodeModel.UserName}-num{qRCodeModel.OrderNo}.pdf";
+
+            return File(pdf, "application/pdf", fileName);
         }
     }
 }
