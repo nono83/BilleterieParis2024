@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewData["Title"] = "Statistiques des ventes";
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+    <div class="row mt-5  justify-content-center">
+        <div class="w-50">
+            <canvas id="chartByOffer"></canvas>
+        </div>
+    </div>
+    <div class="row mt-5  justify-content-center">
+    <div class="w-70">
+        <canvas id="chartByMonth"></canvas>
+    </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("StatByOffer", "Statistics")',
+                contentType: "application/json",
+                datatype: 'json',
+                success: function (result) {
+                    console.log(result);
+                    var offerNames = [];
+                    var offerCounts = [];
+
+                    result.map(order => {
+                        offerNames.push(order.Name);
+                        offerCounts.push(order.Total);
+                    });
+
+                    var ctx = document.getElementById('chartByOffer').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: offerNames,
+                            datasets: [{
+                                label: "total",
+                                data: offerCounts,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: ['#0000C1', '#339966', '#FF0000'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: "Nombre de ventes par type d'offres",
+                                    font: {
+                                        size: 24
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (jqXhr, textStatus, errorMessage) { // error callback
+                    alert('Error: ' + jqXhr.responseText);
+                }
+            });
+
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("StatByMonth", "Statistics")',
+                contentType: "application/json",
+                datatype:'json',
+                success: function (result) {
+                    var months=[];
+                    var solos=[];
+                    var duos=[];
+                    var groupes=[];
+                    result.map(order => {
+                        months.push(order.Month);
+                        solos.push(order.Solo);
+                        duos.push(order.Duo);
+                        groupes.push(order.Groupe);
+                    });
+                    console.log(result);
+                    var ctx = document.getElementById('chartByMonth').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                label: 'Offres solo',
+                                data: solos,
+                                borderColor: '#FF0000',
+                                backgroundColor: '#FF0000',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Offres Duo',
+                                data: duos,
+                                borderColor: '#0000C1',
+                                backgroundColor: '#0000C1',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Offres Groupe 4 pers',
+                                data: groupes,
+                                borderColor: '#339966',
+                                backgroundColor: '#339966',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: false
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: "Détails des ventes par mois",
+                                    font: {
+                                        size: 24
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (jqXhr, textStatus, errorMessage) { // error callback
+                    alert('Error: ' + jqXhr.responseText);
+                }
+            });
+         });
+    </script>
+</body>
+</html>

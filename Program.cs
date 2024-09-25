@@ -89,8 +89,6 @@ namespace BilleterieParis2024
                 options.Cookie.IsEssential = true;
             });
 
-
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
