@@ -76,8 +76,12 @@ namespace BilleterieParis2024
 
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
+            //Configuration pour SendGrid
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
+            //Configuration pour MailJet
+            //builder.Services.AddTransient<IEmailSender, MailjetService>();
 
             //Gestion des sessions
             builder.Services.AddSession(options =>

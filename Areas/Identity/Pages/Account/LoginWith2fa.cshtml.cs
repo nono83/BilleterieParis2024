@@ -11,23 +11,30 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BilleterieParis2024.Models;
+using BilleterieParis2024.Services;
+using System.Text.Encodings.Web;
 
 namespace BilleterieParis2024.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
+        private readonly IEmailSender _emailSender;
 
         public LoginWith2faModel(
-            SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
-            ILogger<LoginWith2faModel> logger)
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LoginWith2faModel> logger,
+            IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -59,17 +66,17 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Le code est obligatoire")]
+            [StringLength(7, ErrorMessage = "Le {0} doit être compris entre {2} et {1} caractéres.", MinimumLength = 6)]
             [DataType(DataType.Text)]
-            [Display(Name = "Authenticator code")]
+            [Display(Name = "Code d'authentification")]
             public string TwoFactorCode { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember this machine")]
+            [Display(Name = "Se souvenir du code sur cette machine")]
             public bool RememberMachine { get; set; }
         }
 
@@ -80,7 +87,31 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
 
             if (user == null)
             {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+                throw new InvalidOperationException($"Impossible de charger l'authentification à 2 facteurs.");
+            }
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if(providers.Any(_ => _ == "Email")) {
+                var token = _userManager.GenerateTwoFactorTokenAsync(user,"Email");
+                EmailModel emailModel = new EmailModel()
+                {
+                    Body = $"Veuillez confirmer votre authentification pour vous connectez à votre compte en saisissant le code de vérification suivant <br /> <h1>{token.Result}</h1>",
+                    ToEmail = user.Email,
+                    Subject = "Authentification de votre connexion"
+                };
+                //SendGrid solution
+                await _emailSender.SendEmailAsync(emailModel.ToEmail, emailModel.Subject, emailModel.Body);
+                
+                //SMTP solution
+                //EmailClientSMTP emailClientSMTP = new EmailClientSMTP();
+                //await emailClientSMTP.SendEmailAsync(user.Email, "Authentification de votre connexion",
+
+               
+                //Mailjet solution
+                //await _emailSender.SendEmailAsync(emailModel.ToEmail, emailModel.Subject, emailModel.Body);
+                //MailjetService mailjetService = new MailjetService();
+
+
+               
             }
 
             ReturnUrl = returnUrl;
@@ -106,7 +137,8 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
 
             var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
+            //var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
+            var result = await _signInManager.TwoFactorSignInAsync("Email",authenticatorCode, rememberMe, Input.RememberMachine);
 
             var userId = await _userManager.GetUserIdAsync(user);
 

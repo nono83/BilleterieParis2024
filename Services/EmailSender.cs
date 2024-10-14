@@ -33,7 +33,7 @@ namespace BilleterieParis2024.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("arnaud.gianati@gmail.com", "Password Recovery"),
+                From = new EmailAddress("arnaud.gianati@club-internet.fr", "Info billeterie Paris 2024"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

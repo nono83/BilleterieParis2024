@@ -19,15 +19,15 @@ namespace BilleterieParis2024.Services
                 smtpClient.Host = "smtp-mail.outlook.com";
                 smtpClient.Port = 587;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new System.Net.NetworkCredential("arnault_gianati@hotmail.com", "AGI7283205"); // Enter seders User name and password  
+                smtpClient.Credentials = new System.Net.NetworkCredential("arnault_gianati@hotmail.com", "xxxxxxxxx"); // Enter seders User name and password  
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.EnableSsl = true;
                 smtpClient.Send(mail);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine($"Erreur sur l'envoi du mail : '{e}'");
                 return false;
             }
         }

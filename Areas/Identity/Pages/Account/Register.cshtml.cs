@@ -133,6 +133,7 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.CustomerKey = GenerateKey(16); //Input.CustomerKey;
+                user.TwoFactorEnabled = true;
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -152,12 +153,14 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    //await _emailSender.SendEmailAsync(Input.Email, "Confirmez votre email",
-                    //    $"Veuillez confirmer la création de votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
+                    //SendGrid Mailjet solution
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirmez votre email",
+                        $"Veuillez confirmer la création de votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
 
-                    EmailClientSMTP emailClientSMTP = new EmailClientSMTP();
-                    await emailClientSMTP.SendEmailAsync(Input.Email, "Confirmez votre email",
-                       $"Veuillez confirmer la création de votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
+                    //SMTP solution
+                    //EmailClientSMTP emailClientSMTP = new EmailClientSMTP();
+                    //await emailClientSMTP.SendEmailAsync(Input.Email, "Confirmez votre email",
+                    //   $"Veuillez confirmer la création de votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

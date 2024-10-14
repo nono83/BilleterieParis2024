@@ -74,16 +74,18 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                //await _emailSender.SendEmailAsync(
-                //    Input.Email,
-                //    "Réinitialisation du mot de passe",
-                //    $"Veuillez réinitialiser le mot de passe en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
-
-                EmailClientSMTP emailClientSMTP = new EmailClientSMTP();
-                await emailClientSMTP.SendEmailAsync(
+                //SendGrid mailjet solution
+                await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Réinitialisation du mot de passe",
                     $"Veuillez réinitialiser le mot de passe en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
+
+                //SmtpClient solution
+                //EmailClientSMTP emailClientSMTP = new EmailClientSMTP();
+                //await emailClientSMTP.SendEmailAsync(
+                //    Input.Email,
+                //    "Réinitialisation du mot de passe",
+                //    $"Veuillez réinitialiser le mot de passe en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
