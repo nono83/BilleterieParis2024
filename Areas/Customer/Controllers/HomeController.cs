@@ -24,6 +24,12 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
             return View();
         }
 
+        [Route("politique-de-confidentialite")]
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
         [Route("offers")]
         public IActionResult Offers()
         {

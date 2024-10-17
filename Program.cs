@@ -93,6 +93,12 @@ namespace BilleterieParis2024
                 options.Cookie.IsEssential = true;
             });
 
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -131,6 +137,7 @@ namespace BilleterieParis2024
 
             app.MapRazorPages();
 
+            app.UseCookiePolicy();
             //Globalization et localization pour le multilanguages
             //var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
             //app.UseRequestLocalization(locOptions.Value);
