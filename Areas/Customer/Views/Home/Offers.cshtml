@@ -15,7 +15,11 @@
 <h2>@ViewData["Title"]</h2>
 <hr />
 <div class="row p-2 my-4 bg-light">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque venenatis nulla ut lacus accumsan suscipit. Integer venenatis molestie nibh in dapibus. Pellentesque tempus sapien sed nulla accumsan consequat. Suspendisse potenti. Fusce vulputate blandit justo, sit amet hendrerit mi ornare nec. Morbi id auctor lacus, eleifend tincidunt augue. Curabitur pulvinar laoreet magna. In pretium felis id augue pharetra, vitae efficitur odio sagittis.</p>
+    <p>Pour ne pas payer trop cher votre billet et assister aux épreuves de votre choix, il faut être attentif aux prochaines mises en vente surprise qui auront lieu chaque mois jusqu’aux Jeux</p>
+        <p>Créez votre compte dès maintenant pour rester informé. Gardez à l’esprit que la disponibilité des billets lors de chaque “relâche” sera limitée. Pour être parmi les premiers à réserver vos places, ne manquez pas ces annonces.
+
+        Le principe du “premier arrivé, premier servi” prévaut, alors soyez prêt à saisir cette opportunité. Restez connecté et assurez-vous de ne pas manquer les prochains moments forts des Jeux Olympiques Paris 2024.
+    </p>
 
 </div>
 @* <div class="row mx-5"> *@
@@ -23,28 +27,6 @@
     
     @foreach (var ticketsOffers in Model)
     {
-@*         <div class="col-md-4">
-            <div class="card mb-4 shadow ">
-                <div class="card-header text-center">
-                    <h4 class="my-0 font-weight-normal">
-                        <label style="font-size: 23px;color: steelblue">@ticketsOffers.OfferName</label>
-                    </h4>
-                </div>
-                <div class="text-center">
-                    <img src="~/@ticketsOffers.Image" alt="Tickets Paris 2024 @ticketsOffers.OfferName" class="my-4 card-img text-center" style="width:200px; height: 150px;" />
-                </div>
-                <div class="card-text mx-3">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <label style="font-size: 20px;color: #a51313"><b>Tarif : @ticketsOffers.Price €</b></label>
-                        </div>
-                        <a asp-action="Detail" asp-controller="Home" asp-route-id="@ticketsOffers.Id" class="btn btn-primary pull-right">Réserver</a>
-                    </div>
-                </div>
-            </div>
-        </div> *@
-
             <div class="row col-md-8 border rounded-2 shadow-sm my-3 py-3">
             <div class="col-sm-4 text-center justify-content-center align-content-center">
                 <img src="~/@ticketsOffers.Image" alt="Tickets @ticketsOffers.OfferName Paris 2024" class="card-img" style="width:130px; height: 100px;" />
