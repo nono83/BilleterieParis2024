@@ -81,7 +81,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
 
 
             var rand = new Random();
-            for (int i = 1; i <= 1000; i++)
+            for (int i = 1; i <= 10000; i++)
             {
                 Orders anOrder = new Orders()
                 {
