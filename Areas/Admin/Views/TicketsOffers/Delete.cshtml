@@ -6,7 +6,7 @@
 
 <h2>@ViewData["Title"] </h2>
 <hr />
-<div class="row justify-content-center align-content-center">
+<div class="row mt-5 justify-content-center align-content-center">
     <dl class="row col-6">
         <h3>Etes vous sûr de vouloir supprimer cette offre ?</h3>
         <dt class = "col-4">
@@ -26,8 +26,8 @@
     <div class="row justify-content-center align-content-center mt-4">
         <form class="col-6" asp-action="Delete">
             <input type="hidden" asp-for="Id" />
-            <input type="submit" value="Delete" class="btn btn-danger col-3" />
-            <a asp-action="Index" class="btn btn-success col-3">Back to List</a>
+            <input type="submit" value="Supprimer" class="btn btn-danger col-3" />
+            <a asp-action="Index" class="btn btn-success col-3">Retour à la liste</a>
         </form>
     </div>
 </div>

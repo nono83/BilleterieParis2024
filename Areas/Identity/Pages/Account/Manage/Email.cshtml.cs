@@ -164,7 +164,7 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account.Manage
                 "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "L'Email de vérification a été envoyé. Vérifiez votre email.";
             return RedirectToPage();
         }
     }

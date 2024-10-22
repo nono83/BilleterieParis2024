@@ -130,10 +130,10 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
-            {
-                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-            }
+            //if (user == null)
+            //{
+            //    throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            //}
 
             var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
@@ -149,13 +149,13 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
             }
             else if (result.IsLockedOut)
             {
-                _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
+                _logger.LogWarning("L'utilisateur avec le compte id '{UserId}' est déconnecté.", user.Id);
                 return RedirectToPage("./Lockout");
             }
             else
             {
                 _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                ModelState.AddModelError(string.Empty, "Le code d'authentification n'est pas valide.");
                 return Page();
             }
         }

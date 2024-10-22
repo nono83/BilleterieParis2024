@@ -23,11 +23,61 @@
 
 </div>
 @* <div class="row mx-5"> *@
-<div class="row justify-content-center align-content-center">
+<div class="row justify-content-center align-content-center row-cols-sm-2 row-cols-md-3 row-cols-1">
     
     @foreach (var ticketsOffers in Model)
     {
-            <div class="row col-md-8 border rounded-2 shadow-sm my-3 py-3">
+       @*  Affichage verticale *@
+        <article class="col">
+        <div class="card  pt-3 shadow">
+                <div class="text-center"><img src="~/@ticketsOffers.Image" alt="Tickets @ticketsOffers.OfferName Paris 2024" class="card-img" style="width:130px; height: 100px;" /></div>
+            <div class="card-body">
+                <h4 class="card-title text-center">@ticketsOffers.OfferName</h4>
+                
+                <p class="card-text">
+                    @ticketsOffers.Description
+                </p>
+                <p class="card-text">
+                        <label style="font-size: 20px;color: #a51313"><b>Tarif : @ticketsOffers.Price €</b></label>
+                </p>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    bool ticketsOfferInCart = false;
+                    if (ticketsOffersCartList != null)
+                    {
+                        var ticketsOffer = ticketsOffersCartList.FirstOrDefault(c => c.Id == ticketsOffers.Id);
+                        ticketsOfferInCart = ticketsOffer != null;
+                    }
+                    if (ticketsOfferInCart)
+                    {
+                        <form asp-controller="Cart" asp-action="Remove" method="post">
+                            <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
+                            <div class="text-center"><button type="submit" class="btn btn-danger pull-right">Annuler</button></div>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="Id" id="Id" value="@ticketsOffers.Id" />
+                                <div class="text-center"><button type="submit" class="btn btn-primary pull-right">Réserver</button></div>
+                        </form>
+                    }
+
+
+                }
+                else
+                {
+                        <div class="text-center">
+                            <button type="button" data-toggle="modal" data-target="#Modal" class="btn btn-primary pull-right">Réserver</button>
+                        </div>
+                }
+               
+            </div>
+        </div>
+        </article>
+
+        @* Affichage horizontale *@
+            @* <div class="row col-md-8 border rounded-2 shadow-sm my-3 py-3">
             <div class="col-sm-4 text-center justify-content-center align-content-center">
                 <img src="~/@ticketsOffers.Image" alt="Tickets @ticketsOffers.OfferName Paris 2024" class="card-img" style="width:130px; height: 100px;" />
                 </div>
@@ -74,7 +124,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
 
     }
 

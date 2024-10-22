@@ -15,15 +15,27 @@
         <dd class = "col-8">
             @Html.DisplayFor(model => model.OfferName)
         </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
         <dt class = "col-4">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
         <dd class = "col-8">
             @Html.DisplayFor(model => model.Price)
         </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.IsAvailable)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.IsAvailable)
+        </dd>
     </dl>
-    <div class="row col-md-6">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary col-3 mx-2">Edit</a>
+    <div class="form-group row justify-content-center align-content-center mt-4">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary col-3 mx-2">Mettre à jour</a>
         <a class="btn btn-success col-3" asp-action="Index">Retour à la liste</a>
     </div>
 </div>

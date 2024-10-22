@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Confirmation de votre compte";
 }
-
-<h1>@ViewData["Title"]</h1>
+<section>
+<h2>@ViewData["Title"]</h2>
+<hr />
 @{
     if (@Model.DisplayConfirmAccountLink)
     {
@@ -20,4 +21,4 @@
 </p>
     }
 }
-
+</section>

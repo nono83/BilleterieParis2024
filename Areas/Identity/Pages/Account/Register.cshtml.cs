@@ -87,7 +87,7 @@ namespace BilleterieParis2024.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required(ErrorMessage = "Le mot de passe est obligatoire")]
-            [StringLength(20, ErrorMessage = "Le {0} doit être compris entre {2} et {1} caractéres.", MinimumLength = 6)]
+            [StringLength(20, ErrorMessage = "Le {0} doit être compris entre {2} et {1} caractéres.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,20}$", ErrorMessage = "Le mot de passe doit avoir au moins 1 majuscule, 1 minuscule, 1 nombre et 1 caractére spécial")]
             [Display(Name = "Mot de passe")]

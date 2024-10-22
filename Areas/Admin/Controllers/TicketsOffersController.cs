@@ -94,8 +94,10 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                 ticketsOffers.Description=Description;
                _context.Add(ticketsOffers);
                 await _context.SaveChangesAsync();
-                TempData["save"] = "L’offre a bien été créée";
-                return RedirectToAction(nameof(Index));
+                //ViewData["save"] = "L’offre a bien été créée";
+                ViewBag.Save = "L’offre a bien été créée";
+                //return RedirectToAction(nameof(Index));
+                return View("Index", _context.TicketsOffers.ToList());
             }
 
            
@@ -148,7 +150,9 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                     ticketsOffers.Description = Description;
                     _context.Update(ticketsOffers);
                     await _context.SaveChangesAsync();
-                    TempData["edit"] = "L'offre a bien été mise à jour";
+                    //ViewData["edit"] = "L'offre a bien été mise à jour";
+                    ViewBag.Edit = "L'offre a bien été mise à jour";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -161,10 +165,11 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+               
             }
             ModelState.Clear();
-            return View(ticketsOffers);
+            //return RedirectToAction(nameof(Index));
+            return View("Index", _context.TicketsOffers.ToList());
         }
 
         // GET: Admin/TicketsOffers/Delete/5
@@ -198,11 +203,13 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
             if (ticketsOffers != null)
             {
                 _context.TicketsOffers.Remove(ticketsOffers);
-                TempData["delete"] = "L'offre a bien été supprimée";
+                //ViewData["delete"] = "L'offre a bien été supprimée";
+                ViewBag.Delete = "L'offre a bien été supprimée";
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return View("Index", _context.TicketsOffers.ToList());
         }
 
         private bool TicketsOffersExists(int id)
