@@ -24,7 +24,7 @@ namespace BilleterieParis2024.Services
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
             string apiSendGridKey = _config["SendGridKey"];
-            //if (string.IsNullOrEmpty(Options.SendGridKey)) 
+            //if (string.IsNullOrEmpty(Options.SendGridKey))
             if (string.IsNullOrEmpty(apiSendGridKey))
             {
                 throw new Exception("Null SendGridKey");
