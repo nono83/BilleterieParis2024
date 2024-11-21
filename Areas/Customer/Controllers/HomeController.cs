@@ -5,6 +5,7 @@ using BilleterieParis2024.Models;
 using Microsoft.EntityFrameworkCore;
 using BilleterieParis2024.Utilities;
 
+
 namespace BilleterieParis2024.Areas.Customer.Controllers
 {
     [Area("Customer")]
@@ -34,7 +35,7 @@ namespace BilleterieParis2024.Areas.Customer.Controllers
         public IActionResult Offers()
         {
             return _context.TicketsOffers != null ?
-                          View(_context.TicketsOffers.Where(x => x.IsAvailable == true).ToList()) :
+                          View("Offers",_context.TicketsOffers.Where(x => x.IsAvailable == true).ToList()) :
                           Problem("Entity set 'ApplicationDbContext.TicketsOffers'  is null.");
         }
 

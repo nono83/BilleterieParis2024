@@ -30,7 +30,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
         public IActionResult Index()
         {
               return _context.TicketsOffers != null ? 
-                          View(_context.TicketsOffers.ToList()) :
+                          View("Index",_context.TicketsOffers.ToList()) :
                           Problem("Entity set 'ApplicationDbContext.TicketsOffers'  is null.");
         }
 
@@ -49,7 +49,7 @@ namespace BilleterieParis2024.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(ticketsOffers);
+            return View("Details",ticketsOffers);
         }
 
         // GET: Admin/TicketsOffers/Create
